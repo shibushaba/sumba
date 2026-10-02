@@ -124,11 +124,26 @@ export async function signOutPlayer() {
   await supabase.auth.signOut()
 }
 
-export async function isUsernameAvailable(username: string): Promise<boolean> {
-  if (!supabase || !isValidUsername(username)) return false
+export type UsernameAvailability = 'available' | 'taken' | 'unavailable'
+
+/**
+ * Returns whether a username can be registered.
+ * `unavailable` = offline / RPC error (must NOT be shown as "taken").
+ */
+export async function isUsernameAvailable(username: string): Promise<UsernameAvailability> {
+  if (!isSupabaseConfigured || !supabase) return 'unavailable'
+  const normalized = normalizeUsername(username)
+  if (!isValidUsername(normalized)) return 'taken'
+
   const { data, error } = await supabase.rpc('is_username_available', {
-    p_username: normalizeUsername(username),
+    p_username: normalized,
   })
-  if (error) return true
-  return Boolean(data)
+
+  if (error) {
+    if (import.meta.env.DEV) console.warn('is_username_available', error.message)
+    return 'unavailable'
+  }
+  if (data === true) return 'available'
+  if (data === false) return 'taken'
+  return 'unavailable'
 }

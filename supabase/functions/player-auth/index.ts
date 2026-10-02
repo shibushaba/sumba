@@ -48,6 +48,8 @@ Deno.serve(async (req) => {
     const password = playerPassword(username, pin)
 
     if (action === 'register') {
+      await admin.rpc('delete_orphan_player_auth', { p_username: normalized })
+
       const { data: existing } = await admin
         .from('profiles')
         .select('user_id')

@@ -13,7 +13,7 @@ interface PlayerLoginFormProps {
 }
 
 type RegisterStep = 'choose-pin' | 'confirm-pin'
-type UsernameStatus = 'idle' | 'checking' | 'available' | 'taken' | 'invalid'
+type UsernameStatus = 'idle' | 'checking' | 'available' | 'taken' | 'invalid' | 'unavailable'
 
 export function PlayerLoginForm({ onSuccess }: PlayerLoginFormProps) {
   const { login, register } = usePlayerAuth()
@@ -47,11 +47,11 @@ export function PlayerLoginForm({ onSuccess }: PlayerLoginFormProps) {
     }
     let cancelled = false
     setUsernameStatus('checking')
-    void isUsernameAvailable(name).then((ok) => {
+    void isUsernameAvailable(name).then((result) => {
       if (cancelled) return
-      setUsernameStatus(ok ? 'available' : 'taken')
-      if (ok) playFeedback({ haptic: 'selection', sound: 'success' })
-      else playFeedback({ haptic: 'error', sound: 'error' })
+      setUsernameStatus(result)
+      if (result === 'available') playFeedback({ haptic: 'selection', sound: 'success' })
+      else if (result === 'taken') playFeedback({ haptic: 'error', sound: 'error' })
     })
     return () => {
       cancelled = true
@@ -115,6 +115,10 @@ export function PlayerLoginForm({ onSuccess }: PlayerLoginFormProps) {
       }
       if (!isValidUsername(name)) {
         failInput('Username must be 3–20 letters, numbers, or _.')
+        return
+      }
+      if (usernameStatus === 'unavailable') {
+        failInput('Cannot check username. Check your connection and try again.')
         return
       }
       if (usernameStatus === 'taken') {
@@ -228,6 +232,11 @@ export function PlayerLoginForm({ onSuccess }: PlayerLoginFormProps) {
           ) : null}
           {mode === 'register' && usernameStatus === 'taken' ? (
             <p className="mt-1 text-xs font-bold text-primary">Username already taken</p>
+          ) : null}
+          {mode === 'register' && usernameStatus === 'unavailable' ? (
+            <p className="mt-1 text-xs font-bold text-primary">
+              Cannot reach SUMBA servers. Check connection, or redeploy with Supabase env vars set.
+            </p>
           ) : null}
           {mode === 'register' && usernameStatus === 'invalid' && username.trim() ? (
             <p className="mt-1 text-xs font-bold text-primary">
