@@ -6,10 +6,14 @@ import { GameActivityProvider } from './context/GameActivityContext'
 import { ensureGamesRegistered } from './games/registerGames'
 import './index.css'
 import App from './App.tsx'
+import { initSupabase } from './lib/supabase'
 
 ensureGamesRegistered()
 
-createRoot(document.getElementById('root')!).render(
+const root = document.getElementById('root')!
+
+void initSupabase().then(() => {
+createRoot(root).render(
   <StrictMode>
     <ErrorBoundary>
       <GameActivityProvider>
@@ -20,3 +24,4 @@ createRoot(document.getElementById('root')!).render(
     </ErrorBoundary>
   </StrictMode>,
 )
+})

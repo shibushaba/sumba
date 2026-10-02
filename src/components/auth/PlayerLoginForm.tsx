@@ -235,7 +235,8 @@ export function PlayerLoginForm({ onSuccess }: PlayerLoginFormProps) {
           ) : null}
           {mode === 'register' && usernameStatus === 'unavailable' ? (
             <p className="mt-1 text-xs font-bold text-primary">
-              Cannot reach SUMBA servers. Check connection, or redeploy with Supabase env vars set.
+              Cannot reach SUMBA servers. Add VITE_SUPABASE_ANON_KEY on Vercel and redeploy, or try again
+              in a moment.
             </p>
           ) : null}
           {mode === 'register' && usernameStatus === 'invalid' && username.trim() ? (
