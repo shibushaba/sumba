@@ -52,6 +52,22 @@ body {
   min-height: 100dvh;
 }
 
+/* No visible scrollbars anywhere; touch / wheel scrolling still works */
+html,
+body,
+#root,
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
 .font-display {
   font-family: var(--font-display);
   letter-spacing: 0.04em;
