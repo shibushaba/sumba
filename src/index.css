@@ -1,0 +1,145 @@
+@import 'tailwindcss';
+@import './styles/tokens.css';
+@import './styles/motion.css';
+@import './styles/animations.css';
+@import './styles/game.css';
+@import './styles/leaderboard.css';
+@import './styles/game-art.css';
+
+@theme {
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-surface: var(--surface);
+  --color-surface-glass: var(--surface-glass);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100dvh;
+  font-family: var(--font-body);
+  line-height: 1.45;
+  font-weight: 400;
+  color: var(--foreground);
+  background: var(--background);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+.pt-safe {
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+}
+
+.pb-nav {
+  padding-bottom: calc(var(--nav-height) + max(0.75rem, env(safe-area-inset-bottom)));
+}
+
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+.game-no-select {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.sumba-bg-base {
+  background: linear-gradient(180deg, #050505 0%, #080808 45%, #0b0b0b 100%);
+}
+
+.sumba-bg-glow {
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -5%, rgba(230, 57, 70, 0.07), transparent 55%),
+    radial-gradient(ellipse 50% 35% at 100% 90%, rgba(80, 40, 120, 0.05), transparent 50%);
+}
+
+.sumba-bg-noise {
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.glass-panel {
+  background: var(--smb-surface-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--smb-border);
+  box-shadow: var(--shadow-glass);
+}
+
+.glass-input {
+  background: rgba(10, 10, 12, 0.65);
+  border: 1px solid var(--smb-border-strong);
+  box-shadow: var(--shadow-tactile);
+}
+
+.btn-tactile:active:not(:disabled) {
+  transform: scale(0.98) translateY(1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-tactile:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+.pwa-toast-enter {
+  animation: sumba-splash-in 0.35s ease-out both;
+}
+
+@keyframes sumba-splash-in {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pwa-toast-enter,
+  .page-enter {
+    animation: none !important;
+  }
+}

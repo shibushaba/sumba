@@ -1,0 +1,534 @@
+:root {
+  --motion-micro: 140ms;
+  --motion-fast: 220ms;
+  --motion-normal: 320ms;
+  --motion-slow: 560ms;
+  --motion-dramatic: 720ms;
+  --ease-out-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+@keyframes motion-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motion-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes motion-pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  70% {
+    transform: scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes motion-shake-x {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes motion-success-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes motion-glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(230, 57, 70, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.25);
+  }
+}
+
+@keyframes motion-letter-morph {
+  0%,
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    color: inherit;
+  }
+  45% {
+    opacity: 0.45;
+    filter: blur(1px);
+    color: var(--primary);
+  }
+}
+
+@keyframes motion-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.015);
+  }
+}
+
+@keyframes motion-mafia-drip {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0) scaleY(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(4px) scaleY(1.15);
+  }
+}
+
+@keyframes motion-eye-blink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  96% {
+    transform: scaleY(0.12);
+  }
+}
+
+@keyframes motion-www-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes motion-podium-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motion-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes motion-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes motion-slide-up-sheet {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motion-reveal-blur {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes motion-www-shuffle {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(18px) rotate(2deg);
+  }
+  50% {
+    transform: translateX(-16px) rotate(-2deg);
+  }
+  75% {
+    transform: translateX(10px) rotate(1deg);
+  }
+}
+
+@keyframes motion-www-seal {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.985);
+    opacity: 0.92;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes motion-detective-scan {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 0% 100%;
+  }
+}
+
+@keyframes motion-out-fade {
+  from {
+    opacity: 1;
+    filter: saturate(1);
+  }
+  to {
+    opacity: 0.85;
+    filter: saturate(0.35);
+  }
+}
+
+@keyframes motion-role-mafia {
+  0% {
+    opacity: 0;
+    filter: brightness(2) saturate(1.4);
+  }
+  40% {
+    opacity: 1;
+    filter: brightness(1.2);
+  }
+  100% {
+    filter: none;
+  }
+}
+
+.motion-slide-up {
+  animation: motion-slide-up var(--motion-fast) var(--ease-out-spring) both;
+}
+
+.motion-scale-in {
+  animation: motion-scale-in var(--motion-fast) var(--ease-out-spring) both;
+}
+
+.motion-pop-in {
+  animation: motion-pop-in var(--motion-normal) var(--ease-out-spring) both;
+}
+
+.motion-shake {
+  animation: motion-shake-x 300ms var(--ease-in-out-soft);
+}
+
+.motion-success-pop {
+  animation: motion-success-pop var(--motion-fast) var(--ease-out-spring);
+}
+
+.motion-stagger-1 {
+  animation-delay: 60ms;
+}
+.motion-stagger-2 {
+  animation-delay: 120ms;
+}
+.motion-stagger-3 {
+  animation-delay: 180ms;
+}
+.motion-stagger-4 {
+  animation-delay: 240ms;
+}
+.motion-stagger-5 {
+  animation-delay: 300ms;
+}
+
+.motion-press-card {
+  transition: transform var(--motion-micro) var(--ease-out-spring),
+    box-shadow var(--motion-micro) ease-out;
+}
+
+.motion-press-card:active {
+  transform: scale(0.98) translateY(1px);
+}
+
+@media (hover: hover) {
+  .motion-press-card:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.motion-input-success {
+  border-color: rgba(45, 212, 168, 0.65) !important;
+  box-shadow: 0 0 0 1px rgba(45, 212, 168, 0.35);
+}
+
+.motion-input-error {
+  border-color: rgba(230, 57, 70, 0.75) !important;
+  box-shadow: 0 0 0 1px rgba(230, 57, 70, 0.35);
+}
+
+.motion-check-pop {
+  animation: motion-pop-in var(--motion-fast) var(--ease-out-spring) both;
+}
+
+.motion-logo-breathe {
+  animation: motion-breathe 4s ease-in-out infinite;
+}
+
+.motion-letter-slot {
+  display: inline-block;
+  width: 0.62em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.motion-letter-morph {
+  animation: motion-letter-morph 420ms var(--ease-in-out-soft);
+}
+
+.visual-idle-imposter::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 28%;
+  height: 12%;
+  margin-left: -14%;
+  margin-top: -6%;
+  background: var(--primary);
+  border-radius: 999px;
+  transform-origin: center;
+  animation: motion-eye-blink 5s ease-in-out infinite;
+  opacity: 0.85;
+}
+
+.visual-idle-mafia::after {
+  content: '';
+  position: absolute;
+  bottom: 8%;
+  left: 18%;
+  width: 8px;
+  height: 22px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(230, 57, 70, 0.9), transparent);
+  animation: motion-mafia-drip 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.group:active .visual-idle-mafia::after {
+  animation-duration: 0.6s;
+}
+
+.visual-idle-www > div > * {
+  animation: motion-www-float 2.8s ease-in-out infinite;
+}
+
+.visual-idle-www > div > *:nth-child(2) {
+  animation-delay: 0.35s;
+}
+
+.visual-idle-www > div > *:nth-child(3) {
+  animation-delay: 0.7s;
+}
+
+.motion-podium-rise {
+  animation: motion-podium-rise var(--motion-normal) var(--ease-out-spring) both;
+}
+
+.motion-toast-in {
+  animation: motion-toast-in var(--motion-fast) var(--ease-out-spring) both;
+}
+
+.motion-modal-panel {
+  animation: motion-modal-in var(--motion-fast) var(--ease-out-spring) both;
+}
+
+.motion-install-sheet {
+  animation: motion-slide-up-sheet var(--motion-normal) var(--ease-out-spring) both;
+}
+
+.motion-reveal-blur {
+  animation: motion-reveal-blur var(--motion-slow) var(--ease-out-spring) both;
+}
+
+.role-reveal-mafia {
+  animation: motion-role-mafia var(--motion-dramatic) var(--ease-out-spring) both;
+}
+
+.target-selected-mafia {
+  animation: motion-glow-pulse 1.2s ease-in-out infinite;
+}
+
+.target-selected-doctor {
+  box-shadow: 0 0 0 2px rgba(45, 212, 168, 0.45);
+}
+
+.target-selected-detective {
+  box-shadow: 0 0 0 2px rgba(91, 159, 212, 0.5);
+}
+
+.motion-input-focus:focus {
+  box-shadow: 0 0 0 1px rgba(230, 57, 70, 0.35);
+  transition: box-shadow var(--motion-micro) ease-out;
+}
+
+.motion-www-seal {
+  animation: motion-www-seal var(--motion-fast) var(--ease-in-out-soft);
+}
+
+.www-shuffle-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 40vh;
+}
+
+.www-shuffle-card {
+  width: 56px;
+  height: 72px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--smb-border-strong);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+  animation: motion-www-shuffle 280ms var(--ease-in-out-soft) 2 both;
+}
+
+.www-shuffle-card:nth-child(2) {
+  animation-delay: 40ms;
+}
+
+.www-shuffle-card:nth-child(3) {
+  animation-delay: 80ms;
+}
+
+.motion-detective-scan {
+  position: relative;
+  overflow: hidden;
+}
+
+.motion-detective-scan::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(91, 159, 212, 0.35) 45%,
+    transparent 90%
+  );
+  background-size: 100% 220%;
+  animation: motion-detective-scan 480ms linear both;
+  pointer-events: none;
+}
+
+.motion-out-fade {
+  animation: motion-out-fade var(--motion-normal) var(--ease-out-spring) both;
+}
+
+.detective-result-neutral {
+  color: rgb(91, 159, 212);
+}
+
+.detective-win-headline {
+  animation: motion-role-mafia var(--motion-dramatic) var(--ease-out-spring) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-slide-up,
+  .motion-scale-in,
+  .motion-pop-in,
+  .motion-shake,
+  .motion-success-pop,
+  .motion-logo-breathe,
+  .motion-letter-morph,
+  .motion-podium-rise,
+  .motion-toast-in,
+  .motion-modal-panel,
+  .motion-install-sheet,
+  .motion-reveal-blur,
+  .role-reveal-mafia,
+  .target-selected-mafia,
+  .visual-idle-imposter::after,
+  .visual-idle-mafia::after,
+  .visual-idle-www > div > * {
+    animation: none !important;
+  }
+
+  .motion-www-seal,
+  .www-shuffle-card,
+  .motion-detective-scan::after,
+  .motion-out-fade,
+  .detective-win-headline {
+    animation: none !important;
+  }
+
+  .motion-press-card:active,
+  .motion-press-card:hover {
+    transform: none;
+  }
+
+  .motion-stagger-1,
+  .motion-stagger-2,
+  .motion-stagger-3,
+  .motion-stagger-4,
+  .motion-stagger-5 {
+    animation-delay: 0ms !important;
+  }
+}

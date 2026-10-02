@@ -1,0 +1,180 @@
+.lb-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--smb-teal);
+  box-shadow: 0 0 12px rgba(45, 212, 168, 0.65);
+  animation: lb-live-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes lb-live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
+}
+
+.lb-filters {
+  --lb-control-height: 2.75rem;
+  width: 100%;
+}
+
+.lb-toolbar-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.lb-refresh-btn {
+  display: flex;
+  width: calc(var(--lb-control-height) + 0.7rem);
+  min-height: calc(var(--lb-control-height) + 0.7rem);
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--smb-border);
+  background: rgba(10, 10, 12, 0.55);
+  color: var(--smb-text-muted);
+}
+
+.lb-refresh-btn:disabled {
+  opacity: 0.5;
+}
+
+.lb-segment-track {
+  display: flex;
+  align-items: stretch;
+  gap: 0.35rem;
+  padding: 0.35rem;
+  min-height: calc(var(--lb-control-height) + 0.7rem);
+  border-radius: var(--radius-md);
+  background: rgba(10, 10, 12, 0.55);
+  border: 1px solid var(--smb-border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.lb-segment-track--equal {
+  overflow-x: visible;
+}
+
+.lb-segment-track--equal .lb-segment-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  justify-content: center;
+  text-align: center;
+}
+
+.lb-segment-track::-webkit-scrollbar {
+  display: none;
+}
+
+.lb-segment-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-height: var(--lb-control-height, 2.75rem);
+  padding: 0 0.65rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--smb-text-muted);
+  border: 1px solid transparent;
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+.lb-segment-btn[data-active='true'] {
+  color: var(--smb-text);
+  background: rgba(230, 57, 70, 0.14);
+  border-color: rgba(230, 57, 70, 0.35);
+}
+
+.lb-podium-stage {
+  position: relative;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--smb-border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(0, 0, 0, 0.15) 100%);
+  padding: 1.25rem 0.75rem 0;
+  overflow: hidden;
+}
+
+.lb-podium-stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(212, 168, 83, 0.12), transparent 55%);
+  pointer-events: none;
+}
+
+.lb-pedestal-gold {
+  background: linear-gradient(180deg, rgba(212, 168, 83, 0.35), rgba(212, 168, 83, 0.08));
+  border-color: rgba(212, 168, 83, 0.45);
+  box-shadow: 0 0 24px rgba(212, 168, 83, 0.2);
+}
+
+.lb-pedestal-silver {
+  background: linear-gradient(180deg, rgba(184, 192, 204, 0.28), rgba(184, 192, 204, 0.06));
+  border-color: rgba(184, 192, 204, 0.35);
+}
+
+.lb-pedestal-bronze {
+  background: linear-gradient(180deg, rgba(196, 124, 74, 0.3), rgba(196, 124, 74, 0.06));
+  border-color: rgba(196, 124, 74, 0.35);
+}
+
+.lb-avatar-ring-gold {
+  box-shadow: 0 0 0 2px rgba(212, 168, 83, 0.55);
+}
+
+.lb-avatar-ring-silver {
+  box-shadow: 0 0 0 2px rgba(184, 192, 204, 0.45);
+}
+
+.lb-avatar-ring-bronze {
+  box-shadow: 0 0 0 2px rgba(196, 124, 74, 0.45);
+}
+
+.lb-row-rank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--smb-text-muted);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--smb-border);
+}
+
+.lb-self-card {
+  background: linear-gradient(
+    135deg,
+    rgba(230, 57, 70, 0.08) 0%,
+    rgba(18, 18, 20, 0.85) 45%
+  );
+  border: 1px solid rgba(230, 57, 70, 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lb-live-dot {
+    animation: none;
+  }
+}

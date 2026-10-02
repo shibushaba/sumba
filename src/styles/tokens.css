@@ -1,0 +1,46 @@
+:root {
+  --smb-bg: #050505;
+  --smb-bg-elevated: #111114;
+  --smb-surface: #0c0c0e;
+  --smb-surface-glass: rgba(17, 17, 20, 0.92);
+  --smb-border: rgba(255, 255, 255, 0.1);
+  --smb-border-strong: rgba(255, 255, 255, 0.14);
+  --smb-red: #e63946;
+  --smb-red-soft: rgba(230, 57, 70, 0.22);
+  --smb-text: #ffffff;
+  --smb-text-secondary: rgba(255, 255, 255, 0.62);
+  --smb-text-muted: rgba(255, 255, 255, 0.38);
+  --smb-gold: #d4a853;
+  --smb-silver: #b8c0cc;
+  --smb-bronze: #c47c4a;
+  --smb-teal: #2dd4a8;
+  --smb-blue: #5b9fd4;
+
+  --background: var(--smb-bg);
+  --foreground: var(--smb-text);
+  --primary: var(--smb-red);
+  --primary-foreground: #0a0a0a;
+  --surface: var(--smb-surface);
+  --surface-glass: var(--smb-surface-glass);
+  --border: var(--smb-border-strong);
+  --muted: var(--smb-text-muted);
+
+  --font-display: 'Chakra Petch', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.55);
+  --shadow-tactile: 0 2px 0 rgba(255, 255, 255, 0.04) inset;
+
+  --nav-height: 4.25rem;
+}

@@ -1,0 +1,592 @@
+/* ==========================================================================
+   SUMBA game artwork — layered SVG + CSS animation layer
+   ========================================================================== */
+
+/* ---------- Card ---------- */
+.game-tile {
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0c0c0e;
+  overflow: hidden;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 14px 40px rgba(0, 0, 0, 0.5);
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms ease,
+    border-color 200ms ease;
+}
+
+.game-tile:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.game-tile.is-pressing,
+.game-tile:active {
+  transform: scale(0.985);
+}
+
+.game-tile--featured {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.game-tile__footer {
+  min-height: 4.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background: #111114;
+  color: #ffffff;
+}
+
+.game-tile__title {
+  color: #ffffff;
+  letter-spacing: 0.06em;
+}
+
+.game-tile__tagline {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.game-tile__chevron {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.game-tile-enter {
+  animation: game-tile-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes game-tile-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ---------- Visual region ---------- */
+.game-art-stage,
+.game-art-stage--featured {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: #050505;
+  /* 210px on a 390px viewport (53.85vw); keep 800×420 artwork uncropped */
+  height: clamp(190px, 53.85vw, 240px);
+}
+
+.game-art-root,
+.game-art {
+  position: absolute;
+  inset: 0;
+}
+
+.game-art {
+  --px: 0px;
+  --py: 0px;
+  overflow: hidden;
+  background: #050505;
+  touch-action: manipulation;
+}
+
+.ga-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- 2.5D layers (parallax ≤ 4px) ---------- */
+.ga-layer {
+  transition: transform 160ms ease-out;
+  will-change: transform;
+}
+
+.ga-layer--bg {
+  transform: translate(calc(var(--px) * 0.2), calc(var(--py) * 0.2));
+}
+
+.ga-layer--env {
+  transform: translate(calc(var(--px) * 0.35), calc(var(--py) * 0.35));
+}
+
+.ga-layer--light {
+  transform: translate(calc(var(--px) * 0.45), calc(var(--py) * 0.45));
+}
+
+.ga-layer--chars {
+  transform: translate(calc(var(--px) * 0.6), calc(var(--py) * 0.6));
+}
+
+.ga-layer--fx {
+  transform: translate(var(--px), var(--py));
+}
+
+/* ---------- Shared idle ---------- */
+.ga-idle {
+  animation: ga-bob 3s ease-in-out infinite;
+}
+
+@keyframes ga-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.ga-particle {
+  opacity: 0;
+  animation: ga-particle-rise 9s linear infinite;
+}
+
+@keyframes ga-particle-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  20% {
+    opacity: 0.55;
+  }
+  80% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-46px);
+  }
+}
+
+/* ==========================================================================
+   IMPOSTER — blue
+   ========================================================================== */
+.ga-imp-bulb {
+  animation: ga-imp-bulb 5s ease-in-out infinite;
+}
+
+@keyframes ga-imp-bulb {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.65;
+  }
+}
+
+.ga-imp-spot {
+  transition: opacity 260ms ease;
+}
+
+.ga-imp-rim {
+  opacity: 0.7;
+  transition: opacity 300ms ease;
+}
+
+.ga-imp-eye,
+.ga-imp-eye-glow {
+  opacity: 0;
+}
+
+.game-art--imposter.is-signature .ga-imp-eye {
+  animation: ga-imp-eye 900ms ease-in-out both;
+}
+
+.game-art--imposter.is-signature .ga-imp-eye-glow {
+  animation: ga-imp-eye-glow 900ms ease-in-out both;
+}
+
+.game-art--imposter.is-signature .ga-imp-rim {
+  opacity: 0.9;
+}
+
+@keyframes ga-imp-eye {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes ga-imp-eye-glow {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  45% {
+    opacity: 0.9;
+    transform: scale(1.15);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+/* press timeline: 50ms card → 100ms eye → 150ms characters forward */
+.game-art--imposter.is-pressed .ga-imp-eye,
+.game-art--imposter.is-pressed .ga-imp-eye-glow {
+  animation: none;
+  opacity: 1;
+  transition: opacity 120ms ease 100ms;
+}
+
+.game-art--imposter.is-pressed .ga-imp-rim {
+  opacity: 1;
+  transition-delay: 100ms;
+}
+
+.game-art--imposter.is-pressed .ga-layer--chars {
+  transform: translate(calc(var(--px) * 0.6), calc(var(--py) * 0.6)) scale(1.01);
+  transform-origin: 50% 70%;
+  transition: transform 200ms ease-out 150ms;
+}
+
+.game-art--imposter.is-pressed .ga-imp-spot {
+  opacity: 1.6;
+}
+
+/* ==========================================================================
+   MAFIA — red
+   ========================================================================== */
+.ga-maf-body {
+  animation: ga-maf-breathe 4s ease-in-out infinite;
+  transition: transform 220ms ease-out;
+}
+
+@keyframes ga-maf-breathe {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.ga-maf-head {
+  animation: ga-maf-head 5s ease-in-out infinite;
+}
+
+@keyframes ga-maf-head {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  33% {
+    transform: rotate(-1deg);
+  }
+  66% {
+    transform: rotate(1deg);
+  }
+}
+
+.ga-maf-rim {
+  animation: ga-maf-rim 3s ease-in-out infinite;
+  transition: opacity 240ms ease;
+}
+
+@keyframes ga-maf-rim {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.ga-maf-red {
+  opacity: 1;
+  transition: opacity 320ms ease;
+}
+
+.ga-maf-fog {
+  animation: ga-maf-fog 9s ease-in-out infinite;
+}
+
+@keyframes ga-maf-fog {
+  0%,
+  100% {
+    opacity: 0.12;
+  }
+  50% {
+    opacity: 0.18;
+  }
+}
+
+.ga-maf-lamp {
+  animation: ga-imp-bulb 7s ease-in-out infinite;
+}
+
+.ga-maf-eye {
+  opacity: 0;
+  transition: opacity 240ms ease;
+}
+
+.ga-maf-glint {
+  opacity: 0;
+  stroke-dashoffset: 72;
+}
+
+/* signature: light +15%, eye, knife glint, lean forward 1px */
+.game-art--mafia.is-signature .ga-maf-red {
+  opacity: 1.15;
+}
+
+.game-art--mafia.is-signature .ga-maf-eye {
+  opacity: 1;
+}
+
+.game-art--mafia.is-signature .ga-maf-rim {
+  animation: none;
+  opacity: 1;
+}
+
+.game-art--mafia.is-signature .ga-maf-glint {
+  animation: ga-maf-glint 500ms ease-in-out 150ms both;
+}
+
+.game-art--mafia.is-signature .ga-maf-body {
+  animation: none;
+  transform: translateY(-1px);
+}
+
+@keyframes ga-maf-glint {
+  0% {
+    opacity: 0;
+    stroke-dashoffset: 72;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    stroke-dashoffset: -14;
+  }
+}
+
+/* press timeline: 0 card → 80ms red → 120ms knife → 180ms forward 2px */
+.game-art--mafia.is-pressed .ga-maf-red {
+  opacity: 1.35;
+  transition-delay: 80ms;
+}
+
+.game-art--mafia.is-pressed .ga-maf-eye {
+  opacity: 1;
+  transition-delay: 80ms;
+}
+
+.game-art--mafia.is-pressed .ga-maf-glint {
+  animation: ga-maf-glint 500ms ease-in-out 120ms both;
+}
+
+.game-art--mafia.is-pressed .ga-maf-body {
+  animation: none;
+  transform: translateY(-2px) scale(1.008);
+  transform-origin: 50% 100%;
+  transition-delay: 180ms;
+}
+
+/* ==========================================================================
+   WHO WHERE WHAT — green
+   ========================================================================== */
+.ga-www-body {
+  animation: ga-www-body 1.5s ease-in-out infinite;
+}
+
+@keyframes ga-www-body {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.ga-www-arm-l {
+  animation: ga-www-arm-l 1.5s ease-in-out infinite;
+}
+
+.ga-www-arm-r {
+  animation: ga-www-arm-r 1.5s ease-in-out infinite;
+}
+
+.ga-www-leg {
+  animation: ga-www-leg 1.5s ease-in-out infinite;
+}
+
+@keyframes ga-www-arm-l {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes ga-www-arm-r {
+  0%,
+  100% {
+    transform: rotate(3deg);
+  }
+  50% {
+    transform: rotate(-3deg);
+  }
+}
+
+@keyframes ga-www-leg {
+  0%,
+  100% {
+    transform: rotate(2deg);
+  }
+  50% {
+    transform: rotate(-2deg);
+  }
+}
+
+.ga-www-beacon {
+  animation: ga-www-beacon 2.4s ease-in-out infinite;
+}
+
+@keyframes ga-www-beacon {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.ga-www-lamp {
+  transition: opacity 220ms ease;
+}
+
+.ga-www-roof {
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.game-art--who-where-what .ga-layer--chars {
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ga-www-burst {
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+/* shuffle: WHO ← 15px, WHERE → 10px, pose freezes, then recombine (900ms) */
+.game-art--who-where-what.is-signature .ga-layer--chars {
+  transform: translate(calc(var(--px) * 0.6 - 15px), calc(var(--py) * 0.6));
+}
+
+.game-art--who-where-what.is-signature .ga-www-roof {
+  transform: translateX(10px);
+}
+
+.game-art--who-where-what.is-signature .ga-www-dance {
+  animation-play-state: paused;
+}
+
+.game-art--who-where-what.is-signature .ga-www-burst {
+  opacity: 0.6;
+}
+
+/* press: quick dance move, particles, rooftop lights, compress */
+.game-art--who-where-what.is-pressed .ga-www-dance {
+  animation-duration: 0.45s;
+  animation-play-state: running;
+}
+
+.game-art--who-where-what.is-pressed .ga-www-lamp {
+  opacity: 1.8;
+}
+
+.game-art--who-where-what.is-pressed .ga-www-burst {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Detective line-up
+   ========================================================================== */
+.ga-det-ring {
+  animation: ga-det-ring 4s ease-in-out infinite;
+}
+
+@keyframes ga-det-ring {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.65;
+  }
+}
+
+/* ==========================================================================
+   Pause (offscreen) & reduced motion
+   ========================================================================== */
+.game-art.is-paused * {
+  animation-play-state: paused !important;
+}
+
+.game-art.is-reduced *,
+.game-art.is-reduced .ga-layer {
+  animation: none !important;
+  transition: none !important;
+}
+
+.game-art.is-reduced .ga-layer {
+  transform: none !important;
+}
+
+.game-art.is-reduced .ga-particles,
+.game-art.is-reduced .ga-www-burst {
+  display: none;
+}
+
+/* static artwork still shows the signature accent */
+.game-art.is-reduced .ga-imp-eye {
+  opacity: 0.9;
+}
+
+.game-art.is-reduced .ga-imp-rim {
+  opacity: 0.7;
+}
+
+.game-art.is-reduced .ga-maf-eye {
+  opacity: 0.8;
+}
+
+.game-art.is-reduced .ga-maf-glint {
+  opacity: 0.9;
+  stroke-dashoffset: 30;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-tile-enter {
+    animation: none;
+  }
+
+  .game-tile:hover,
+  .game-tile:active,
+  .game-tile.is-pressing {
+    transform: none;
+  }
+}
