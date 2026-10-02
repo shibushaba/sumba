@@ -16,7 +16,7 @@ import {
   signOutPlayer,
   signUpPlayer,
 } from '../../lib/playerAuth'
-import { supabase, isSupabaseConfigured } from '../../lib/supabase'
+import { supabase, ensureSupabase } from '../../lib/supabase'
 import { ensureOwnerPlayerRoster } from '../../services/savedPlayers'
 
 interface PlayerProfile {
@@ -55,18 +55,22 @@ export function PlayerAuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!isSupabaseConfigured || !supabase) {
-      setLoading(false)
-      return
-    }
-    supabase.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user ?? null)
-      setLoading(false)
+    let unsubscribe: (() => void) | undefined
+    void ensureSupabase().then((client) => {
+      if (!client) {
+        setLoading(false)
+        return
+      }
+      void client.auth.getSession().then(({ data }) => {
+        setUser(data.session?.user ?? null)
+        setLoading(false)
+      })
+      const { data: sub } = client.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null)
+      })
+      unsubscribe = () => sub.subscription.unsubscribe()
     })
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
-    return () => sub.subscription.unsubscribe()
+    return () => unsubscribe?.()
   }, [])
 
   useEffect(() => {

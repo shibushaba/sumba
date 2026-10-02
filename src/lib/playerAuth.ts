@@ -1,4 +1,9 @@
-import { supabase, isSupabaseConfigured } from './supabase'
+import {
+  supabase,
+  isSupabaseConfigured,
+  ensureSupabase,
+  getSupabasePublicConfig,
+} from './supabase'
 
 const PLAYER_EMAIL_DOMAIN = 'sumba.player'
 
@@ -44,11 +49,12 @@ async function playerAuthViaFunction(
   username: string,
   pin: string,
 ): Promise<void> {
-  const baseUrl = import.meta.env.VITE_SUPABASE_URL
-  const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-  if (!baseUrl || !anonKey) {
+  await ensureSupabase()
+  const cfg = getSupabasePublicConfig()
+  if (!cfg) {
     throw new Error('SUMBA is offline.')
   }
+  const { url: baseUrl, anonKey } = cfg
 
   const res = await fetch(`${baseUrl}/functions/v1/player-auth`, {
     method: 'POST',
@@ -92,6 +98,7 @@ async function signInDirect(username: string, pin: string): Promise<void> {
 }
 
 export async function signUpPlayer(username: string, pin: string) {
+  await ensureSupabase()
   if (!isSupabaseConfigured || !supabase) {
     throw new Error('SUMBA is offline. Connect to create an account.')
   }
@@ -104,6 +111,7 @@ export async function signUpPlayer(username: string, pin: string) {
 }
 
 export async function signInPlayer(username: string, pin: string) {
+  await ensureSupabase()
   if (!isSupabaseConfigured || !supabase) {
     throw new Error('SUMBA is offline. Connect to sign in.')
   }
@@ -131,6 +139,7 @@ export type UsernameAvailability = 'available' | 'taken' | 'unavailable'
  * `unavailable` = offline / RPC error (must NOT be shown as "taken").
  */
 export async function isUsernameAvailable(username: string): Promise<UsernameAvailability> {
+  await ensureSupabase()
   if (!isSupabaseConfigured || !supabase) return 'unavailable'
   const normalized = normalizeUsername(username)
   if (!isValidUsername(normalized)) return 'taken'

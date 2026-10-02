@@ -1,6 +1,6 @@
 /**
- * Writes public/config.json for production (Vite bakes env at build time;
- * this file is also fetched at runtime if env vars were missing from the bundle).
+ * Writes public/config.json for production.
+ * Never wipes an existing anon key when CI has no VITE_* env vars.
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
@@ -24,9 +24,32 @@ function fromDotEnv() {
   return out
 }
 
+function readExistingConfig() {
+  const outPath = resolve(process.cwd(), 'public', 'config.json')
+  if (!existsSync(outPath)) return {}
+  try {
+    return JSON.parse(readFileSync(outPath, 'utf8'))
+  } catch {
+    return {}
+  }
+}
+
 const dot = fromDotEnv()
-const supabaseUrl = (process.env.VITE_SUPABASE_URL || dot.url || DEFAULT_URL).trim()
-const supabaseAnonKey = (process.env.VITE_SUPABASE_ANON_KEY || dot.key || '').trim()
+const existing = readExistingConfig()
+
+const supabaseUrl = (
+  process.env.VITE_SUPABASE_URL ||
+  dot.url ||
+  existing.supabaseUrl ||
+  DEFAULT_URL
+).trim()
+
+const supabaseAnonKey = (
+  process.env.VITE_SUPABASE_ANON_KEY ||
+  dot.key ||
+  existing.supabaseAnonKey ||
+  ''
+).trim()
 
 const outPath = resolve(process.cwd(), 'public', 'config.json')
 writeFileSync(
@@ -36,9 +59,10 @@ writeFileSync(
 )
 
 if (!supabaseAnonKey) {
-  console.warn(
-    'write-public-config: VITE_SUPABASE_ANON_KEY is empty — set it in .env or Vercel before shipping.',
+  console.error(
+    'write-public-config: missing anon key — set VITE_SUPABASE_ANON_KEY on Vercel or in public/config.json',
   )
-} else {
-  console.log('write-public-config: wrote public/config.json')
+  process.exit(1)
 }
+
+console.log('write-public-config: wrote public/config.json')
