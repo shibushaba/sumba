@@ -1,8 +1,8 @@
-import { assignRoles } from './assignRoles'
+import { assignRoles, createRevealOrder } from './assignRoles'
 import { buildRoundActionQueue } from './actionQueue'
 import { createSessionId } from './ids'
 import { canStartMafia } from './players'
-import { syncDoctorState } from './doctorState'
+import { doctorProtectionForNewRound, syncDoctorState } from './doctorState'
 import { resolveRound } from './resolveRound'
 import type {
   MafiaGameState,
@@ -44,6 +44,9 @@ export function createInitialMafiaState(): MafiaGameState {
     roundsCompleted: 0,
     scoreSubmitted: false,
     rolesAssigned: false,
+    revealOrder: [],
+    revealIndex: 0,
+    roleRevealStep: 'pass',
     doctorSavesCount: 0,
   }
 }
@@ -78,11 +81,25 @@ function getDetective(state: MafiaGameState): MafiaPlayer | undefined {
   return state.players.find((p) => p.role === 'detective')
 }
 
+function advanceRoleReveal(state: MafiaGameState): MafiaGameState {
+  const nextIndex = state.revealIndex + 1
+  if (nextIndex >= state.revealOrder.length) {
+    return startRoundAction(state)
+  }
+  return {
+    ...state,
+    revealIndex: nextIndex,
+    roleRevealStep: 'pass',
+  }
+}
+
 function startRoundAction(state: MafiaGameState): MafiaGameState {
   const synced = syncDoctorState(state)
+  const protection = doctorProtectionForNewRound(synced)
   const queue = buildRoundActionQueue(synced.players, synced.doctorAlive)
   return {
     ...synced,
+    ...protection,
     phase: 'round-action',
     actionQueue: queue,
     actionIndex: 0,
@@ -247,21 +264,26 @@ export function mafiaReducer(
       return { ...state, players: action.players }
 
     case 'BEGIN_ROLE_ASSIGNMENT': {
-      if (!canStartMafia(state)) return state
-      const players = assignRoles(
-        state.players.map((p) => ({ id: p.id, name: p.name })),
-      )
-      return startRoundAction(
-        syncDoctorState({
-          ...state,
-          players,
-          rolesAssigned: true,
-          doctorAlive: true,
-        }),
-      )
+      if (!canStartMafia(state) || state.rolesAssigned) return state
+      const roster = state.players.map((p) => ({ id: p.id, name: p.name }))
+      const players = assignRoles(roster)
+      const revealOrder = createRevealOrder(roster)
+      return syncDoctorState({
+        ...state,
+        phase: 'role-reveal',
+        players,
+        rolesAssigned: true,
+        revealOrder,
+        revealIndex: 0,
+        roleRevealStep: 'pass',
+        doctorAlive: true,
+      })
     }
 
     case 'PASS_ACK': {
+      if (state.phase === 'role-reveal' && state.roleRevealStep === 'pass') {
+        return { ...state, roleRevealStep: 'reveal' }
+      }
       if (state.phase !== 'round-action' || state.actionStep !== 'pass') {
         return state
       }
@@ -274,12 +296,18 @@ export function mafiaReducer(
     }
 
     case 'TAP_REVEAL':
+      if (state.phase === 'role-reveal' && state.roleRevealStep === 'reveal') {
+        return { ...state, roleRevealStep: 'role' }
+      }
       if (state.phase !== 'round-action' || state.actionStep !== 'reveal') {
         return state
       }
       return { ...state, actionStep: 'role' }
 
     case 'ROLE_NEXT':
+      if (state.phase === 'role-reveal' && state.roleRevealStep === 'role') {
+        return advanceRoleReveal(state)
+      }
       if (state.phase !== 'round-action' || state.actionStep !== 'role') {
         return state
       }
@@ -301,6 +329,10 @@ export function mafiaReducer(
 
     case 'DOCTOR_PROTECT': {
       if (!state.doctorAlive || state.actionStep !== 'action') return state
+      const doctorId =
+        state.doctorPlayerId ??
+        state.players.find((p) => p.role === 'doctor')?.id
+      if (doctorId && action.targetId === doctorId) return state
       return {
         ...state,
         doctorProtectedPlayerId: action.targetId,

@@ -11,6 +11,7 @@ export type MafiaWinReason =
 export type MafiaPhase =
   | 'setup'
   | 'players'
+  | 'role-reveal'
   | 'round-action'
   | 'private-notify'
   | 'round-result'
@@ -70,5 +71,8 @@ export interface MafiaGameState {
   roundsCompleted: number
   scoreSubmitted: boolean
   rolesAssigned: boolean
+  revealOrder: string[]
+  revealIndex: number
+  roleRevealStep: 'pass' | 'reveal' | 'role'
   doctorSavesCount: number
 }

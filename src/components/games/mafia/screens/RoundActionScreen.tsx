@@ -182,11 +182,14 @@ export function RoundActionScreen() {
       )
     }
 
-    const targets = livingPlayersExcept(fullState.players, [])
+    const targets = livingPlayersExcept(fullState.players, [player.id])
     return (
       <GameShell title="Mafia" onBack={goBack} centerContent={false} progress={roundLabel}>
         <div className="game-phase-enter flex flex-1 flex-col gap-6 pb-4">
-          <p className="font-display text-lg font-black uppercase">Protect one player</p>
+          <p className="font-display text-lg font-black uppercase">Protect one player this round</p>
+          <p className="text-sm text-muted">
+            Living players only — protection does not bring anyone back from elimination.
+          </p>
           <PlayerTargetList
             players={targets}
             selectedId={pick}

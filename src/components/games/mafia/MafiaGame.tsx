@@ -3,6 +3,7 @@ import { useGameActivity } from '../../../context/GameActivityContext'
 import { useMafia } from './MafiaContext'
 import { SetupScreen } from './screens/SetupScreen'
 import { PlayersScreen } from './screens/PlayersScreen'
+import { RoleRevealScreen } from './screens/RoleRevealScreen'
 import { RoundActionScreen } from './screens/RoundActionScreen'
 import { PrivateNotifyScreen } from './screens/PrivateNotifyScreen'
 import { RoundResultScreen } from './screens/RoundResultScreen'
@@ -10,6 +11,7 @@ import { GameOverScreen } from './screens/GameOverScreen'
 import { LeaderboardScreen } from './screens/LeaderboardScreen'
 
 const ACTIVE = new Set([
+  'role-reveal',
   'round-action',
   'private-notify',
   'round-result',
@@ -32,6 +34,9 @@ export function MafiaGame() {
       break
     case 'players':
       screen = <PlayersScreen />
+      break
+    case 'role-reveal':
+      screen = <RoleRevealScreen />
       break
     case 'round-action':
       screen = <RoundActionScreen />

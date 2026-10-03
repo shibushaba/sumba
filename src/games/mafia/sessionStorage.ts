@@ -16,6 +16,9 @@ export function loadMafiaSession(): MafiaGameState | null {
       doctorPlayerId: parsed.doctorPlayerId ?? null,
       doctorAlive: parsed.doctorAlive ?? false,
       winReason: parsed.winReason ?? null,
+      revealOrder: parsed.revealOrder ?? [],
+      revealIndex: parsed.revealIndex ?? 0,
+      roleRevealStep: parsed.roleRevealStep ?? 'pass',
     })
   } catch {
     return null

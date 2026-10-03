@@ -1,32 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { formatSentence, getBeVerb } from './getBeVerb'
-
-describe('getBeVerb', () => {
-  it('uses was for singular names', () => {
-    expect(getBeVerb('Shibu')).toBe('was')
-    expect(getBeVerb('Babu')).toBe('was')
-  })
-
-  it('uses were for plural groups', () => {
-    expect(getBeVerb('The boys')).toBe('were')
-    expect(getBeVerb('The cousins')).toBe('were')
-  })
-
-  it('uses was for everyone', () => {
-    expect(getBeVerb('Everyone')).toBe('was')
-  })
-})
+import { formatSentence } from './getBeVerb'
 
 describe('formatSentence', () => {
-  it('formats singular sentence', () => {
-    expect(
-      formatSentence('Shibu', 'dancing', 'on top of a tree'),
-    ).toBe('Shibu was dancing on top of a tree.')
+  it('joins who, where, what in order', () => {
+    expect(formatSentence('Shinu', 'Chadi', 'Mookil')).toBe('Shinu Mookil Chadi')
   })
 
-  it('formats plural sentence', () => {
-    expect(formatSentence('The boys', 'running', 'in the street')).toBe(
-      'The boys were running in the street.',
-    )
+  it('trims parts and skips empties', () => {
+    expect(formatSentence(' Shibu ', 'dancing', ' tree ')).toBe('Shibu tree dancing')
   })
 })

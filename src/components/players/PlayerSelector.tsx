@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { filterSavedPlayerSuggestions } from '../../lib/savedPlayerSearch'
 import { isValidPlayerDisplayName, formatPlayerDisplayName } from '../../lib/playerName'
+import { usePlayerAuthOptional } from '../auth/PlayerAuthProvider'
+import { createLocalPartyPlayer } from '../../players/localPartyPlayer'
 import {
   createSavedPlayer,
   fetchSavedPlayers,
 } from '../../services/savedPlayers'
+import { ensureSupabase } from '../../lib/supabase'
 import type { SavedPlayerRecord, SelectedPlayer } from '../../players/types'
 import { GameButton } from '../games/imposter/GameButton'
 
@@ -21,6 +24,7 @@ export function PlayerSelector({
   maxPlayers,
   disabled,
 }: PlayerSelectorProps) {
+  const auth = usePlayerAuthOptional()
   const [roster, setRoster] = useState<SavedPlayerRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
@@ -30,12 +34,14 @@ export function PlayerSelector({
   useEffect(() => {
     let cancelled = false
     setLoading(true)
-    void fetchSavedPlayers().then((list) => {
-      if (!cancelled) {
-        setRoster(list)
-        setLoading(false)
-      }
-    })
+    void ensureSupabase()
+      .then(() => fetchSavedPlayers())
+      .then((list) => {
+        if (!cancelled) {
+          setRoster(list)
+          setLoading(false)
+        }
+      })
     return () => {
       cancelled = true
     }
@@ -65,34 +71,45 @@ export function PlayerSelector({
     }
     setCreating(true)
     setError(null)
-    const created = await createSavedPlayer(name)
-    setCreating(false)
-    if (!created) {
-      setError('Could not create player. Try again.')
-      return
+    await ensureSupabase()
+
+    const signedIn = Boolean(auth?.user)
+    let player: SelectedPlayer | null = null
+
+    if (signedIn) {
+      player = await createSavedPlayer(name)
+      setCreating(false)
+      if (!player) {
+        setError('Could not save player. Check your connection and try again.')
+        return
+      }
+    } else {
+      player = createLocalPartyPlayer(name)
+      setCreating(false)
     }
+
     setRoster((prev) => {
-      const exists = prev.some((p) => p.id === created.id)
+      const exists = prev.some((p) => p.id === player!.id)
       if (exists) {
         return prev.map((p) =>
-          p.id === created.id
-            ? { ...p, displayName: created.displayName, isActive: true }
+          p.id === player!.id
+            ? { ...p, displayName: player!.displayName, isActive: true }
             : p,
         )
       }
       return [
         ...prev,
         {
-          id: created.id,
-          displayName: created.displayName,
-          normalizedName: created.displayName.toLowerCase(),
+          id: player!.id,
+          displayName: player!.displayName,
+          normalizedName: player!.displayName.toLowerCase(),
           avatarSeed: '',
           isActive: true,
           lastPlayedAt: null,
         },
       ]
     })
-    onSelect(created)
+    onSelect(player)
     setQuery('')
   }
 
@@ -156,7 +173,11 @@ export function PlayerSelector({
       ) : null}
 
       {query.trim() && !loading && suggestions.length === 0 ? (
-        <p className="text-sm text-muted">No saved player found.</p>
+        <p className="text-sm text-muted">
+          {auth?.user
+            ? 'No saved player found.'
+            : 'No saved player found. You can still add a guest for this game.'}
+        </p>
       ) : null}
 
       {showCreate ? (

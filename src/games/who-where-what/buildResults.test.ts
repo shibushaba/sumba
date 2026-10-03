@@ -27,7 +27,7 @@ describe('buildResults', () => {
     expect(results[0].who).toBe('A-WHO')
     expect(results[0].what).toBe('C-WHAT')
     expect(results[0].where).toBe('B-WHERE')
-    expect(results[0].sentence).toBe('A-WHO was C-WHAT B-WHERE.')
+    expect(results[0].sentence).toBe('A-WHO B-WHERE C-WHAT')
     expect(results[0].id).toBeTruthy()
   })
 

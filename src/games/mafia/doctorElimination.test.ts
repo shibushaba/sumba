@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { buildRoundActionQueue } from './actionQueue'
-import { canDoctorAct } from './doctorState'
+import { canDoctorAct, doctorProtectionForNewRound } from './doctorState'
 import {
   createInitialMafiaState,
+  mafiaReducer,
   resolveCurrentRound,
 } from './reducer'
 import type { MafiaPlayer } from './types'
@@ -83,6 +84,63 @@ describe('Mafia kills Doctor', () => {
     expect(buildRoundActionQueue(state.players, state.doctorAlive)).not.toContain(
       IDS.doctor,
     )
+  })
+})
+
+describe('Doctor self-protect', () => {
+  it('rejects protecting the Doctor role player', () => {
+    let state = {
+      ...createInitialMafiaState(),
+      phase: 'round-action' as const,
+      players: basePlayers(),
+      doctorPlayerId: IDS.doctor,
+      doctorAlive: true,
+      actionStep: 'action' as const,
+      actionIndex: 1,
+      actionQueue: buildRoundActionQueue(basePlayers(), true),
+    }
+
+    state = mafiaReducer(state, {
+      type: 'DOCTOR_PROTECT',
+      targetId: IDS.doctor,
+    })
+
+    expect(state.doctorProtectionActive).toBe(false)
+    expect(state.doctorProtectedPlayerId).toBe(null)
+    expect(state.actionStep).toBe('action')
+  })
+})
+
+describe('Doctor protection between rounds', () => {
+  it('clears unused protection when Doctor is alive for a new round', () => {
+    const state = {
+      ...createInitialMafiaState(),
+      doctorAlive: true,
+      doctorProtectionActive: true,
+      doctorProtectedPlayerId: IDS.c,
+    }
+    expect(doctorProtectionForNewRound(state)).toEqual({
+      doctorProtectedPlayerId: null,
+      doctorProtectionActive: false,
+    })
+  })
+
+  it('starts round 2 without carrying over a living Doctor shield', () => {
+    let state = resolveCurrentRound(stateWithNight(IDS.d))
+    expect(state.doctorProtectionActive).toBe(true)
+
+    state = {
+      ...state,
+      phase: 'round-result',
+      currentRound: 1,
+      winner: null,
+    }
+    state = mafiaReducer(state, { type: 'START_NEXT_ROUND' })
+
+    expect(state.currentRound).toBe(2)
+    expect(state.doctorAlive).toBe(true)
+    expect(state.doctorProtectionActive).toBe(false)
+    expect(state.doctorProtectedPlayerId).toBe(null)
   })
 })
 

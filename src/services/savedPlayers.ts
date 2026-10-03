@@ -1,4 +1,4 @@
-import { supabase, isSupabaseConfigured } from '../lib/supabase'
+import { supabase, isSupabaseConfigured, ensureSupabase } from '../lib/supabase'
 import type { SavedPlayerRecord, SelectedPlayer } from '../players/types'
 
 function mapRow(row: Record<string, unknown>): SavedPlayerRecord {
@@ -13,6 +13,7 @@ function mapRow(row: Record<string, unknown>): SavedPlayerRecord {
 }
 
 export async function fetchSavedPlayers(): Promise<SavedPlayerRecord[]> {
+  await ensureSupabase()
   if (!isSupabaseConfigured || !supabase) return []
   const { data, error } = await supabase
     .from('saved_players')
@@ -31,7 +32,10 @@ export async function fetchSavedPlayers(): Promise<SavedPlayerRecord[]> {
 export async function createSavedPlayer(
   displayName: string,
 ): Promise<SelectedPlayer | null> {
+  await ensureSupabase()
   if (!isSupabaseConfigured || !supabase) return null
+  const { data: auth } = await supabase.auth.getUser()
+  if (!auth.user) return null
   const { data, error } = await supabase.rpc('create_saved_player', {
     p_display_name: displayName,
   })
