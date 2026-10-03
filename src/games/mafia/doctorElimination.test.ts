@@ -6,7 +6,7 @@ import {
   mafiaReducer,
   resolveCurrentRound,
 } from './reducer'
-import type { MafiaPlayer } from './types'
+import type { MafiaGameState, MafiaPlayer } from './types'
 
 const IDS = {
   mafia: 'mafia',
@@ -89,13 +89,13 @@ describe('Mafia kills Doctor', () => {
 
 describe('Doctor self-protect', () => {
   it('rejects protecting the Doctor role player', () => {
-    let state = {
+    let state: MafiaGameState = {
       ...createInitialMafiaState(),
-      phase: 'round-action' as const,
+      phase: 'round-action',
       players: basePlayers(),
       doctorPlayerId: IDS.doctor,
       doctorAlive: true,
-      actionStep: 'action' as const,
+      actionStep: 'action',
       actionIndex: 1,
       actionQueue: buildRoundActionQueue(basePlayers(), true),
     }
